@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.suratcore.desktop.controller.GenerateDialogController"
+      spacing="16.0" stylesheets="@../css/style.css" styleClass="dialog-root" prefWidth="540.0">
+    <padding>
+        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
+    </padding>
+
+    <!-- Header -->
+    <VBox spacing="4.0">
+        <Label text="Generate &amp; Registrasi Nomor Surat Baru" styleClass="dialog-title"/>
+        <Label text="Lengkapi informasi di bawah untuk mendapatkan nomor registrasi resmi perusahaan"
+               styleClass="sub-title" wrapText="true"/>
+    </VBox>
+
+    <Separator/>
+
+    <!-- Error message banner -->
+    <Label fx:id="lblError" text="Pesan Error" wrapText="true"
+           styleClass="alert-danger" maxWidth="Infinity" visible="false"/>
+
+    <!-- Form Grid -->
+    <GridPane hgap="12.0" vgap="14.0">
+        <columnConstraints>
+            <ColumnConstraints minWidth="130.0" prefWidth="140.0"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <!-- Divisi -->
+        <Label text="Divisi Pemohon:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="field-label"/>
+        <ComboBox fx:id="cbDivision" promptText="Pilih Divisi" maxWidth="Infinity"
+                  GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="input-field"/>
+
+        <!-- Tanggal -->
+        <Label text="Tanggal Registrasi:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="field-label"/>
+        <DatePicker fx:id="dpTanggal" maxWidth="Infinity"
+                    GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="input-field"/>
+
+        <!-- Urutan / Sequence -->
+        <Label text="Nomor Urut Dokumen:" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="field-label"/>
+        <HBox spacing="10.0" alignment="CENTER_LEFT" GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <Spinner fx:id="spSequence" editable="true" prefWidth="120.0" styleClass="input-field"/>
+            <Button fx:id="btnGenerate" text="Perbarui Format" onAction="#updateGeneratedNumber"
+                    styleClass="btn-secondary"/>
+        </HBox>
+
+        <!-- Nomor Surat (Generated) -->
+        <Label text="Nomor Surat Resmi:" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="field-label"/>
+        <VBox spacing="4.0" GridPane.rowIndex="3" GridPane.columnIndex="1">
+            <TextField fx:id="txtNomorSurat" promptText="001/DIV/SRT/XI/2026"
+                       styleClass="input-field, generated-number-field"/>
+            <Label text="Format: [No Urut]/[Kode Divisi]/SRT/[Bulan Romawi]/[Tahun]" styleClass="field-hint"/>
+        </VBox>
+
+        <!-- Keterangan -->
+        <Label text="Keterangan / Perihal:" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="field-label"/>
+        <TextArea fx:id="txtKeterangan" promptText="Contoh: Surat Permohonan Akses Server Internal"
+                  prefRowCount="3" wrapText="true" styleClass="input-field"
+                  GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+        <!-- Status -->
+        <Label text="Status Awal:" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="field-label"/>
+        <ComboBox fx:id="cbStatus" maxWidth="Infinity"
+                  GridPane.rowIndex="5" GridPane.columnIndex="1" styleClass="input-field"/>
+    </GridPane>
+
+    <!-- Bottom Actions -->
+    <HBox spacing="12.0" alignment="CENTER_RIGHT">
+        <ProgressIndicator fx:id="progressIndicator" prefWidth="20.0" prefHeight="20.0"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button text="Batal" onAction="#handleCancel" styleClass="btn-secondary"/>
+        <Button fx:id="btnSave" text="Simpan &amp; Daftarkan Nomor" onAction="#handleSave"
+                styleClass="btn-primary" defaultButton="true"/>
+    </HBox>
+</VBox>
+

@@ -1,0 +1,54 @@
+name: Build Windows Application (jpackage)
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21 (Windows)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build Project & Copy Dependencies
+        shell: cmd
+        run: |
+          call mvn clean package -DskipTests
+          call mvn dependency:copy-dependencies -DoutputDirectory=target\libs
+          copy target\suratcore-desktop-1.0.0-SNAPSHOT.jar target\libs\
+
+      - name: Package Standalone Windows App via jpackage
+        shell: cmd
+        run: |
+          jpackage --type app-image ^
+            --name "SuratCore" ^
+            --app-version "1.0.0" ^
+            --input target\libs\ ^
+            --main-jar suratcore-desktop-1.0.0-SNAPSHOT.jar ^
+            --main-class com.suratcore.desktop.Launcher ^
+            --dest dist\
+
+      - name: Create ZIP Package
+        shell: pwsh
+        run: |
+          Compress-Archive -Path dist/SuratCore -DestinationPath dist/SuratCore-Windows-x64.zip
+
+      - name: Upload Windows Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SuratCore-Windows-Application
+          path: dist/SuratCore-Windows-x64.zip
+          retention-days: 14
+
